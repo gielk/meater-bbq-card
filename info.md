@@ -2,6 +2,10 @@
 
 Tile-style Home Assistant dashboard cards for Meater probe sensors.
 
+![Meater BBQ cards preview](docs/images/preview.svg)
+
+![Meater app inspired card preview](docs/images/meater-app-card.svg)
+
 Includes:
 
 - live BBQ card with core, ambient, target, timing, and progress;

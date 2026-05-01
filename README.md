@@ -13,6 +13,8 @@ The repository ships six frontend cards:
 
 ![Meater BBQ cards preview](docs/images/preview.svg)
 
+![Meater app inspired card preview](docs/images/meater-app-card.svg)
+
 ## Installation
 
 ### HACS

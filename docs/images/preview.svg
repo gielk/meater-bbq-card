@@ -1,86 +1,171 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1040" viewBox="0 0 1400 1040" role="img" aria-labelledby="title desc">
   <title id="title">Meater BBQ Cards preview</title>
-  <desc id="desc">Preview of Home Assistant dashboard cards for Meater probe sensors.</desc>
+  <desc id="desc">Overview of the Meater Home Assistant dashboard cards, including the app-inspired card, live card, compact card, countdown card, history card, and strip card.</desc>
   <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#151312"/>
+      <stop offset="1" stop-color="#23201d"/>
+    </linearGradient>
     <linearGradient id="ember" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#d84315"/>
       <stop offset="0.55" stop-color="#ff6b2c"/>
       <stop offset="1" stop-color="#ffb300"/>
     </linearGradient>
-    <linearGradient id="cool" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#191716"/>
-      <stop offset="1" stop-color="#282421"/>
+    <linearGradient id="appArc" x1="90" y1="620" x2="410" y2="620" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#405fb8"/>
+      <stop offset="0.38" stop-color="#b735d6"/>
+      <stop offset="0.68" stop-color="#ff6b2c"/>
+      <stop offset="1" stop-color="#8e2c22"/>
+    </linearGradient>
+    <linearGradient id="coreBubble" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b735d6"/>
+      <stop offset="1" stop-color="#d84315"/>
+    </linearGradient>
+    <linearGradient id="targetBubble" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#39b6ff"/>
+      <stop offset="1" stop-color="#00a6a6"/>
+    </linearGradient>
+    <linearGradient id="ambientBubble" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#66d24f"/>
+      <stop offset="1" stop-color="#43a047"/>
     </linearGradient>
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="28" stdDeviation="30" flood-color="#000" flood-opacity="0.28"/>
+      <feDropShadow dx="0" dy="24" stdDeviation="26" flood-color="#000" flood-opacity="0.30"/>
     </filter>
+    <style>
+      .title { fill: #f6f1ec; font: 800 42px Arial, sans-serif; }
+      .subtitle { fill: #a9a29b; font: 700 22px Arial, sans-serif; }
+      .card { fill: url(#bg); stroke: #3a3430; stroke-width: 1; }
+      .tile { fill: #2b2724; }
+      .muted { fill: #a9a29b; font: 800 16px Arial, sans-serif; }
+      .label { fill: #a9a29b; font: 800 13px Arial, sans-serif; }
+      .strong { fill: #fff8f0; font: 900 28px Arial, sans-serif; }
+      .smallStrong { fill: #fff8f0; font: 900 22px Arial, sans-serif; }
+      .tiny { fill: #a9a29b; font: 800 12px Arial, sans-serif; }
+      .orange { fill: #ff6b2c; }
+      .green { fill: #43a047; }
+      .chip { fill: #342f2b; }
+    </style>
   </defs>
 
-  <rect width="1400" height="860" fill="#11100f"/>
-  <rect x="56" y="56" width="1288" height="748" rx="42" fill="#171513"/>
-  <text x="92" y="116" fill="#f5f1ec" font-family="Arial, sans-serif" font-size="42" font-weight="800">Meater BBQ Cards</text>
-  <text x="92" y="154" fill="#a9a29b" font-family="Arial, sans-serif" font-size="22" font-weight="700">Mushroom-style live cooking, app-inspired countdown and temperature history</text>
+  <rect width="1400" height="1040" fill="#11100f"/>
+  <rect x="40" y="42" width="1320" height="956" rx="44" fill="#171513"/>
+  <text x="76" y="104" class="title">Meater BBQ Cards</text>
+  <text x="76" y="142" class="subtitle">Mushroom-style cards for live Meater cooks, remaining time and BBQ history</text>
 
   <g filter="url(#shadow)">
-    <rect x="92" y="204" width="596" height="548" rx="34" fill="url(#cool)" stroke="#3a3430"/>
-    <circle cx="148" cy="264" r="36" fill="#5a2d1f"/>
-    <text x="135" y="276" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="34" font-weight="900">M</text>
-    <text x="204" y="254" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="800">Ribeye</text>
-    <text x="204" y="286" fill="#fff8f0" font-family="Arial, sans-serif" font-size="34" font-weight="900">Meater probe</text>
-    <rect x="508" y="234" width="132" height="48" rx="24" fill="#302b28"/>
-    <circle cx="536" cy="258" r="8" fill="#43a047"/>
-    <text x="558" y="266" fill="#d6d0ca" font-family="Arial, sans-serif" font-size="19" font-weight="900">Started</text>
+    <rect x="70" y="178" width="400" height="770" rx="34" class="card"/>
+    <circle cx="128" cy="238" r="34" fill="#5a2d1f"/>
+    <text x="116" y="251" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="30" font-weight="900">M</text>
+    <text x="180" y="230" class="muted">Cooking</text>
+    <text x="180" y="262" class="strong">Meater App Card</text>
+    <rect x="330" y="218" width="96" height="42" rx="21" class="chip"/>
+    <text x="350" y="245" class="muted">Ready 8:30</text>
 
-    <text x="124" y="396" fill="#fff8f0" font-family="Arial, sans-serif" font-size="92" font-weight="900">54&#176;</text>
-    <text x="128" y="430" fill="#a9a29b" font-family="Arial, sans-serif" font-size="20" font-weight="800">core temperature</text>
-    <rect x="404" y="350" width="106" height="44" rx="22" fill="#4b2a20"/>
-    <text x="430" y="379" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="20" font-weight="900">133&#176;C</text>
-    <rect x="524" y="350" width="96" height="44" rx="22" fill="#273b24"/>
-    <text x="550" y="379" fill="#66bb6a" font-family="Arial, sans-serif" font-size="20" font-weight="900">58&#176;C</text>
-
-    <rect x="124" y="472" width="516" height="74" rx="24" fill="#2a2725"/>
-    <text x="150" y="510" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="900">Progress to target</text>
-    <text x="584" y="510" fill="#d6d0ca" font-family="Arial, sans-serif" font-size="18" font-weight="900">93%</text>
-    <rect x="150" y="522" width="464" height="12" rx="6" fill="#4a4540"/>
-    <rect x="150" y="522" width="432" height="12" rx="6" fill="url(#ember)"/>
-
-    <rect x="124" y="578" width="242" height="96" rx="28" fill="#2a2725"/>
-    <circle cx="170" cy="626" r="26" fill="#5a2d1f"/>
-    <text x="202" y="616" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="900">Ambient</text>
-    <text x="202" y="650" fill="#fff8f0" font-family="Arial, sans-serif" font-size="34" font-weight="900">133&#176;C</text>
-    <rect x="150" y="662" width="190" height="8" rx="4" fill="#4a4540"/>
-    <rect x="150" y="662" width="86" height="8" rx="4" fill="#ffb300"/>
-
-    <rect x="398" y="578" width="242" height="96" rx="28" fill="#2a2725"/>
-    <circle cx="444" cy="626" r="26" fill="#3a4b28"/>
-    <text x="476" y="616" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="900">Target</text>
-    <text x="476" y="650" fill="#fff8f0" font-family="Arial, sans-serif" font-size="34" font-weight="900">58&#176;C</text>
-    <rect x="424" y="662" width="190" height="8" rx="4" fill="#4a4540"/>
-    <rect x="424" y="662" width="172" height="8" rx="4" fill="#43a047"/>
+    <g>
+      <circle cx="150" cy="362" r="48" fill="url(#coreBubble)"/>
+      <text x="118" y="374" fill="#fff" font-family="Arial, sans-serif" font-size="29" font-weight="800">54°</text>
+      <text x="120" y="430" class="label">Internal</text>
+      <circle cx="270" cy="362" r="48" fill="url(#targetBubble)"/>
+      <text x="238" y="374" fill="#fff" font-family="Arial, sans-serif" font-size="29" font-weight="800">58°</text>
+      <text x="244" y="430" class="label">Target</text>
+      <circle cx="390" cy="362" r="48" fill="url(#ambientBubble)"/>
+      <text x="354" y="374" fill="#fff" font-family="Arial, sans-serif" font-size="29" font-weight="800">133°</text>
+      <text x="356" y="430" class="label">Ambient</text>
+    </g>
+    <text x="201" y="480" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="21" font-weight="850">Ribeye cook</text>
+    <rect x="105" y="510" width="330" height="266" rx="30" class="tile"/>
+    <path d="M 128 704 A 122 122 0 0 1 412 704" fill="none" stroke="#47413c" stroke-width="28" stroke-linecap="round"/>
+    <path d="M 128 704 A 122 122 0 0 1 412 704" fill="none" stroke="url(#appArc)" stroke-width="28" stroke-linecap="round" stroke-dasharray="392" stroke-dashoffset="54"/>
+    <polygon points="126,690 156,680 150,711" fill="#b735d6"/>
+    <polygon points="270,546 284,578 256,578" fill="#39b6ff"/>
+    <polygon points="413,690 383,680 389,711" fill="#43a047"/>
+    <rect x="194" y="617" width="152" height="100" rx="28" fill="#241f1c"/>
+    <text x="226" y="663" fill="#fff8f0" font-family="Arial, sans-serif" font-size="44" font-weight="300">23m</text>
+    <text x="226" y="692" class="muted">remaining</text>
+    <rect x="130" y="820" width="280" height="62" rx="24" class="tile"/>
+    <text x="160" y="858" class="muted">Chef Hat · Cooking · 93%</text>
   </g>
 
   <g filter="url(#shadow)">
-    <rect x="736" y="204" width="572" height="548" rx="34" fill="url(#cool)" stroke="#3a3430"/>
-    <circle cx="792" cy="264" r="36" fill="#5a2d1f"/>
-    <text x="778" y="276" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="34" font-weight="900">H</text>
-    <text x="848" y="254" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="800">BBQ history</text>
-    <text x="848" y="286" fill="#fff8f0" font-family="Arial, sans-serif" font-size="34" font-weight="900">Temperature history</text>
-    <rect x="1198" y="234" width="64" height="48" rx="24" fill="#302b28"/>
-    <text x="1214" y="266" fill="#d6d0ca" font-family="Arial, sans-serif" font-size="19" font-weight="900">3h</text>
+    <rect x="505" y="178" width="825" height="250" rx="30" class="card"/>
+    <circle cx="560" cy="230" r="32" fill="#5a2d1f"/>
+    <text x="548" y="242" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="28" font-weight="900">L</text>
+    <text x="615" y="222" class="muted">Ribeye</text>
+    <text x="615" y="254" class="strong">Live probe card</text>
+    <rect x="1168" y="208" width="112" height="42" rx="21" class="chip"/>
+    <circle cx="1190" cy="229" r="7" fill="#43a047"/>
+    <text x="1206" y="236" class="muted">Started</text>
+    <text x="545" y="352" fill="#fff8f0" font-family="Arial, sans-serif" font-size="72" font-weight="900">54°</text>
+    <text x="550" y="380" class="muted">core temperature</text>
+    <rect x="780" y="307" width="140" height="52" rx="26" fill="#4b2a20"/>
+    <text x="820" y="341" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="22" font-weight="900">23m</text>
+    <rect x="940" y="307" width="140" height="52" rx="26" fill="#4b2a20"/>
+    <text x="974" y="341" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="22" font-weight="900">133°C</text>
+    <rect x="1100" y="307" width="140" height="52" rx="26" fill="#273b24"/>
+    <text x="1140" y="341" fill="#66bb6a" font-family="Arial, sans-serif" font-size="22" font-weight="900">58°C</text>
+    <rect x="545" y="397" width="735" height="10" rx="5" fill="#4a4540"/>
+    <rect x="545" y="397" width="680" height="10" rx="5" fill="url(#ember)"/>
+  </g>
 
-    <rect x="780" y="338" width="484" height="292" rx="28" fill="#2a2725"/>
-    <line x1="830" y1="400" x2="1210" y2="400" stroke="#57504a" stroke-width="2"/>
-    <line x1="830" y1="470" x2="1210" y2="470" stroke="#57504a" stroke-width="2"/>
-    <line x1="830" y1="540" x2="1210" y2="540" stroke="#57504a" stroke-width="2"/>
-    <path d="M830 570 C900 552 944 516 996 486 C1058 450 1126 430 1210 418" fill="none" stroke="#ff6b2c" stroke-width="8" stroke-linecap="round"/>
-    <path d="M830 505 C900 492 952 466 1008 452 C1078 433 1142 430 1210 422" fill="none" stroke="#ffb300" stroke-width="8" stroke-linecap="round"/>
-    <path d="M830 424 L1210 424" fill="none" stroke="#43a047" stroke-width="6" stroke-dasharray="14 14" stroke-linecap="round"/>
+  <g filter="url(#shadow)">
+    <rect x="505" y="458" width="395" height="210" rx="30" class="card"/>
+    <text x="540" y="510" class="muted">Compact Card</text>
+    <rect x="540" y="535" width="170" height="92" rx="24" class="tile"/>
+    <text x="562" y="570" class="label">Core</text>
+    <text x="562" y="604" class="strong">54°C</text>
+    <rect x="728" y="535" width="136" height="92" rx="24" fill="#4b2a20"/>
+    <text x="754" y="570" class="label">Remaining</text>
+    <text x="760" y="604" fill="#fff8f0" font-family="Arial, sans-serif" font-size="30" font-weight="900">23m</text>
+    <rect x="540" y="645" width="324" height="8" rx="4" fill="#4a4540"/>
+    <rect x="540" y="645" width="300" height="8" rx="4" fill="url(#ember)"/>
+  </g>
 
-    <circle cx="792" cy="686" r="8" fill="#ff6b2c"/>
-    <text x="808" y="693" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="900">Core</text>
-    <circle cx="888" cy="686" r="8" fill="#ffb300"/>
-    <text x="904" y="693" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="900">Ambient</text>
-    <circle cx="1018" cy="686" r="8" fill="#43a047"/>
-    <text x="1034" y="693" fill="#a9a29b" font-family="Arial, sans-serif" font-size="18" font-weight="900">Target</text>
+  <g filter="url(#shadow)">
+    <rect x="935" y="458" width="395" height="210" rx="30" class="card"/>
+    <text x="970" y="510" class="muted">Countdown Card</text>
+    <circle cx="1035" cy="585" r="68" fill="none" stroke="#473f39" stroke-width="20"/>
+    <path d="M 967 585 A 68 68 0 0 1 1103 585" fill="none" stroke="url(#ember)" stroke-width="20" stroke-linecap="round"/>
+    <text x="995" y="585" fill="#fff8f0" font-family="Arial, sans-serif" font-size="34" font-weight="900">23m</text>
+    <text x="1000" y="615" class="label">remaining</text>
+    <rect x="1130" y="535" width="158" height="44" rx="18" class="tile"/>
+    <text x="1150" y="563" class="smallStrong">54°C</text>
+    <rect x="1130" y="592" width="158" height="44" rx="18" class="tile"/>
+    <text x="1150" y="620" class="smallStrong">58°C</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="505" y="698" width="395" height="250" rx="30" class="card"/>
+    <text x="540" y="750" class="muted">History Card</text>
+    <rect x="540" y="775" width="324" height="126" rx="24" class="tile"/>
+    <line x1="570" y1="808" x2="840" y2="808" stroke="#5b544d" stroke-width="2"/>
+    <line x1="570" y1="842" x2="840" y2="842" stroke="#5b544d" stroke-width="2"/>
+    <line x1="570" y1="876" x2="840" y2="876" stroke="#5b544d" stroke-width="2"/>
+    <path d="M570 880 C625 862 652 838 700 818 C758 794 802 788 840 780" fill="none" stroke="#ff6b2c" stroke-width="7" stroke-linecap="round"/>
+    <path d="M570 852 C620 842 665 828 715 816 C770 802 808 796 840 790" fill="none" stroke="#ffb300" stroke-width="7" stroke-linecap="round"/>
+    <path d="M570 800 L840 800" fill="none" stroke="#43a047" stroke-width="5" stroke-dasharray="12 12"/>
+    <circle cx="548" cy="922" r="7" fill="#ff6b2c"/>
+    <text x="564" y="927" class="tiny">Core</text>
+    <circle cx="620" cy="922" r="7" fill="#ffb300"/>
+    <text x="636" y="927" class="tiny">Ambient</text>
+    <circle cx="725" cy="922" r="7" fill="#43a047"/>
+    <text x="741" y="927" class="tiny">Target</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="935" y="698" width="395" height="250" rx="30" class="card"/>
+    <text x="970" y="750" class="muted">Strip Card</text>
+    <circle cx="1005" cy="810" r="30" fill="#5a2d1f"/>
+    <text x="994" y="822" fill="#ff6b2c" font-family="Arial, sans-serif" font-size="28" font-weight="900">S</text>
+    <text x="1055" y="795" class="muted">Ribeye</text>
+    <text x="1055" y="828" fill="#fff8f0" font-family="Arial, sans-serif" font-size="46" font-weight="900">54°</text>
+    <rect x="970" y="862" width="100" height="48" rx="18" class="tile"/>
+    <text x="990" y="892" class="smallStrong">23m</text>
+    <rect x="1084" y="862" width="100" height="48" rx="18" class="tile"/>
+    <text x="1100" y="892" class="smallStrong">133°</text>
+    <rect x="1198" y="862" width="100" height="48" rx="18" class="tile"/>
+    <text x="1220" y="892" class="smallStrong">58°</text>
+    <rect x="970" y="926" width="328" height="8" rx="4" fill="#4a4540"/>
+    <rect x="970" y="926" width="304" height="8" rx="4" fill="url(#ember)"/>
   </g>
 </svg>
