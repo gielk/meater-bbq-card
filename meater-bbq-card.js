@@ -1,9 +1,10 @@
-const MEATER_BBQ_CARD_VERSION = "0.2.0";
+const MEATER_BBQ_CARD_VERSION = "0.3.0";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
 const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
 const MEATER_COUNTDOWN_CARD_TAG = "meater-countdown-card";
 const MEATER_STRIP_CARD_TAG = "meater-strip-card";
+const MEATER_APP_CARD_TAG = "meater-app-card";
 const MEATER_PROBE_CARD_EDITOR_TAG = "meater-probe-card-editor";
 const MEATER_HISTORY_CARD_EDITOR_TAG = "meater-probe-history-card-editor";
 
@@ -933,6 +934,155 @@ class MeaterBaseCard extends HTMLElement {
           padding: 11px;
         }
 
+        .app-shell {
+          gap: 18px;
+        }
+
+        .app-bubbles {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .app-bubble {
+          min-width: 0;
+          display: grid;
+          justify-items: center;
+          gap: 8px;
+          padding: 0;
+          background: none;
+          text-align: center;
+        }
+
+        .app-bubble-value {
+          width: 76px;
+          height: 76px;
+          display: grid;
+          place-items: center;
+          border-radius: 999px;
+          color: white;
+          font-size: 25px;
+          font-weight: 800;
+          line-height: 1;
+          box-shadow: 0 14px 26px color-mix(in srgb, var(--primary-text-color) 13%, transparent);
+        }
+
+        .app-bubble-value.core {
+          background: linear-gradient(135deg, #b735d6, var(--meater-steak));
+        }
+
+        .app-bubble-value.target {
+          background: linear-gradient(135deg, #39b6ff, var(--meater-cool));
+        }
+
+        .app-bubble-value.ambient {
+          background: linear-gradient(135deg, #66d24f, var(--meater-green));
+        }
+
+        .app-cook-title {
+          margin-top: -3px;
+          color: var(--meater-hot);
+          font-size: 17px;
+          font-weight: 850;
+          text-align: center;
+        }
+
+        .app-arc-wrap {
+          position: relative;
+          min-height: 225px;
+          display: grid;
+          place-items: center;
+          border-radius: 28px;
+          background:
+            radial-gradient(circle at center, color-mix(in srgb, var(--meater-hot) 7%, transparent), transparent 58%),
+            var(--meater-tile-bg);
+        }
+
+        .app-arc {
+          width: min(100%, 360px);
+          height: auto;
+          overflow: visible;
+        }
+
+        .app-arc-track {
+          fill: none;
+          stroke: color-mix(in srgb, var(--primary-text-color) 10%, transparent);
+          stroke-width: 30;
+          stroke-linecap: round;
+        }
+
+        .app-arc-fill {
+          fill: none;
+          stroke: url(#meater-app-arc-gradient);
+          stroke-width: 30;
+          stroke-linecap: round;
+          transition: stroke-dashoffset 250ms ease;
+        }
+
+        .app-pointer {
+          filter: drop-shadow(0 4px 7px color-mix(in srgb, var(--primary-text-color) 18%, transparent));
+        }
+
+        .app-pointer.core {
+          fill: #b735d6;
+        }
+
+        .app-pointer.target {
+          fill: #39b6ff;
+        }
+
+        .app-pointer.ambient {
+          fill: var(--meater-green);
+        }
+
+        .app-center {
+          position: absolute;
+          inset: 62px 0 0;
+          display: grid;
+          place-items: center;
+          pointer-events: none;
+        }
+
+        .app-center-button {
+          pointer-events: auto;
+          display: grid;
+          justify-items: center;
+          gap: 3px;
+          padding: 10px 16px;
+          border-radius: 24px;
+          background: color-mix(in srgb, var(--ha-card-background, var(--card-background-color, #fff)) 84%, transparent);
+          text-align: center;
+          box-shadow: 0 10px 24px color-mix(in srgb, var(--primary-text-color) 9%, transparent);
+        }
+
+        .app-remaining-value {
+          max-width: 170px;
+          overflow: hidden;
+          color: var(--primary-text-color, #1f1f1f);
+          font-size: 46px;
+          font-weight: 300;
+          line-height: 0.95;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .app-food {
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          color: var(--meater-muted);
+          font-size: 15px;
+          font-weight: 750;
+          text-align: center;
+        }
+
+        .app-food ha-icon {
+          color: var(--meater-hot);
+          --mdc-icon-size: 20px;
+        }
+
         .chart-wrap {
           min-height: 246px;
           display: grid;
@@ -1507,6 +1657,128 @@ class MeaterStripCard extends MeaterBaseCard {
   }
 }
 
+class MeaterAppCard extends MeaterBaseCard {
+  static getStubConfig(hass) {
+    const candidates = findMeaterCoreCandidates(hass);
+    return candidates.length === 1 ? { core_temp: candidates[0] } : {};
+  }
+
+  static getConfigElement() {
+    return document.createElement(MEATER_PROBE_CARD_EDITOR_TAG);
+  }
+
+  getCardSize() {
+    return 7;
+  }
+
+  getGridOptions() {
+    return {
+      rows: 8,
+      columns: 6,
+      min_rows: 6,
+      min_columns: 4,
+    };
+  }
+
+  _render() {
+    if (!this.shadowRoot || !this._hass) {
+      return;
+    }
+    this._entities = this._buildEntities();
+    const coreState = this._state(this._entities.core_temp);
+    if (!coreState) {
+      this._renderEntitySetupHelp(
+        "Meater app card",
+        "No Meater core temperature sensor could be selected automatically. Select the core temperature entity or set an entity prefix in the card editor.",
+      );
+      return;
+    }
+
+    const ambientState = this._state(this._entities.ambient_temp);
+    const targetState = this._state(this._entities.target_temp);
+    const statusState = this._state(this._entities.cook_status);
+    const cookNameState = this._state(this._entities.cook_name);
+    const remainingState = this._state(this._entities.remaining_time);
+    const core = numericState(coreState);
+    const target = numericState(targetState);
+    const progress = target ? percent(core, target) : 0;
+    const arcLength = 440;
+    const arcOffset = arcLength - (arcLength * progress) / 100;
+    const connected = isAvailable(coreState);
+    const status = normalizeLabel(statusState?.state, connected ? "Cooking" : "Probe offline");
+    const cookName = normalizeLabel(cookNameState?.state, "Cook");
+    const title = this._config.name || "Meater";
+
+    this.shadowRoot.innerHTML = `
+      ${this._styles()}
+      <ha-card>
+        <div class="meater-shell app-shell ${connected ? "online" : "offline"}">
+          <header class="meater-header">
+            <span class="header-title">
+              <span class="hero-icon"><ha-icon icon="mdi:food-steak"></ha-icon></span>
+              <span>
+                <span class="eyebrow">${html(status)}</span>
+                <span class="title">${html(title)}</span>
+              </span>
+            </span>
+            <span class="status-pill"><span class="status-dot"></span>${html(formatFinishLabel(remainingState, "ETA"))}</span>
+          </header>
+
+          <section class="app-bubbles">
+            ${this._bubble("Internal", this._entities.core_temp, coreState, "core")}
+            ${this._bubble("Target", this._entities.target_temp, targetState, "target")}
+            ${this._bubble("Ambient", this._entities.ambient_temp, ambientState, "ambient")}
+          </section>
+
+          <div class="app-cook-title">${html(cookName)}</div>
+
+          <section class="app-arc-wrap">
+            <svg class="app-arc" viewBox="0 0 360 230" role="img" aria-label="Meater cook progress">
+              <defs>
+                <linearGradient id="meater-app-arc-gradient" x1="20" y1="190" x2="340" y2="190" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#405fb8"></stop>
+                  <stop offset="0.38" stop-color="#b735d6"></stop>
+                  <stop offset="0.68" stop-color="#ff6b2c"></stop>
+                  <stop offset="1" stop-color="#8e2c22"></stop>
+                </linearGradient>
+              </defs>
+              <path class="app-arc-track" d="M 42 190 A 138 138 0 0 1 318 190"></path>
+              <path
+                class="app-arc-fill"
+                d="M 42 190 A 138 138 0 0 1 318 190"
+                style="stroke-dasharray: ${arcLength}; stroke-dashoffset: ${arcOffset};"
+              ></path>
+              <polygon class="app-pointer core" points="38,181 66,170 62,199"></polygon>
+              <polygon class="app-pointer target" points="180,38 193,68 167,68"></polygon>
+              <polygon class="app-pointer ambient" points="322,181 294,170 298,199"></polygon>
+            </svg>
+            <div class="app-center">
+              <button class="app-center-button" data-entity="${html(this._entities.remaining_time)}">
+                <span class="app-remaining-value">${html(formatRemaining(remainingState))}</span>
+                <span class="current-label">remaining</span>
+              </button>
+            </div>
+          </section>
+
+          <div class="app-food">
+            <ha-icon icon="mdi:chef-hat"></ha-icon>
+            <span>${html(cookName)} · ${html(status)} · ${Math.round(progress)}%</span>
+          </div>
+        </div>
+      </ha-card>
+    `;
+  }
+
+  _bubble(label, entityId, stateObj, tone) {
+    return `
+      <button class="app-bubble" data-entity="${html(entityId)}">
+        <span class="app-bubble-value ${html(tone)}">${html(formatTemperature(stateObj, "--"))}</span>
+        <span class="time-label">${html(label)}</span>
+      </button>
+    `;
+  }
+}
+
 class MeaterProbeHistoryCard extends MeaterBaseCard {
   static getStubConfig(hass) {
     const candidates = findMeaterCoreCandidates(hass);
@@ -1858,6 +2130,9 @@ if (!customElements.get(MEATER_COUNTDOWN_CARD_TAG)) {
 if (!customElements.get(MEATER_STRIP_CARD_TAG)) {
   customElements.define(MEATER_STRIP_CARD_TAG, MeaterStripCard);
 }
+if (!customElements.get(MEATER_APP_CARD_TAG)) {
+  customElements.define(MEATER_APP_CARD_TAG, MeaterAppCard);
+}
 if (!customElements.get(MEATER_PROBE_CARD_EDITOR_TAG)) {
   customElements.define(MEATER_PROBE_CARD_EDITOR_TAG, MeaterProbeCardEditor);
 }
@@ -1895,6 +2170,12 @@ window.customCards.push(
     type: MEATER_STRIP_CARD_TAG,
     name: "Meater Strip Card",
     description: "Slim Meater dashboard strip with core, remaining time, BBQ, and target values.",
+    documentationURL: "https://github.com/gielk/meater-bbq-card",
+  },
+  {
+    type: MEATER_APP_CARD_TAG,
+    name: "Meater App Card",
+    description: "MEATER-app inspired Mushroom-style card with temperature bubbles and remaining-time arc.",
     documentationURL: "https://github.com/gielk/meater-bbq-card",
   },
 );

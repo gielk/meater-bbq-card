@@ -7,5 +7,6 @@ Includes:
 - live BBQ card with core, ambient, target, timing, and progress;
 - temperature history card;
 - compact card, countdown card, and slim strip card alternatives;
+- MEATER-app inspired card with temperature bubbles and a remaining-time arc;
 - visual editor support;
 - automatic entity matching for common Dutch and English Meater sensor names.

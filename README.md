@@ -2,13 +2,14 @@
 
 Mushroom-style Lovelace cards for Meater probe sensors in Home Assistant.
 
-The repository ships five frontend cards:
+The repository ships six frontend cards:
 
 - `custom:meater-probe-card` for live core temperature, ambient temperature, target, timing, status, and progress.
 - `custom:meater-probe-history-card` for BBQ-style temperature history.
 - `custom:meater-compact-card` for a smaller live tile with remaining time.
 - `custom:meater-countdown-card` for a remaining-time first cooking card.
 - `custom:meater-strip-card` for a slim section/dashboard status strip.
+- `custom:meater-app-card` for a MEATER-app inspired Mushroom-style card with temperature bubbles and a remaining-time arc.
 
 ![Meater BBQ cards preview](docs/images/preview.svg)
 
@@ -40,7 +41,7 @@ type: module
 
 ## Quick Start
 
-After installation, the cards are available in the Home Assistant card picker as `Meater Probe Card`, `Meater Probe History`, `Meater Compact Card`, `Meater Countdown Card`, and `Meater Strip Card`.
+After installation, the cards are available in the Home Assistant card picker as `Meater Probe Card`, `Meater Probe History`, `Meater Compact Card`, `Meater Countdown Card`, `Meater Strip Card`, and `Meater App Card`.
 
 For a single Meater probe, the cards usually auto-detect the sensor set:
 
@@ -76,6 +77,13 @@ Use the strip card for a slim dashboard row:
 
 ```yaml
 type: custom:meater-strip-card
+entity_prefix: meater_probe_ac7269c8
+```
+
+Use the app card when you want a MEATER-app inspired layout with round internal, target, and ambient temperature indicators plus a large remaining-time arc:
+
+```yaml
+type: custom:meater-app-card
 entity_prefix: meater_probe_ac7269c8
 ```
 
@@ -130,6 +138,8 @@ sections:
       - type: custom:meater-countdown-card
         entity_prefix: meater_probe_ac7269c8
       - type: custom:meater-strip-card
+        entity_prefix: meater_probe_ac7269c8
+      - type: custom:meater-app-card
         entity_prefix: meater_probe_ac7269c8
   - cards:
       - type: custom:meater-probe-history-card

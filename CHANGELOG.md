@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.0 - 2026-05-01
+
+- Added `custom:meater-app-card`.
+- Added a MEATER-app inspired layout with internal, target, and ambient temperature bubbles.
+- Added a large remaining-time arc that uses `remaining_time` / `sensor.*_resterende_tijd`.
+- Kept styling aligned with Home Assistant and Mushroom-style cards.
+
 ## v0.2.0 - 2026-05-01
 
 - Added `custom:meater-compact-card`.

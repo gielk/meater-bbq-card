@@ -19,7 +19,7 @@
   <rect width="1400" height="860" fill="#11100f"/>
   <rect x="56" y="56" width="1288" height="748" rx="42" fill="#171513"/>
   <text x="92" y="116" fill="#f5f1ec" font-family="Arial, sans-serif" font-size="42" font-weight="800">Meater BBQ Cards</text>
-  <text x="92" y="154" fill="#a9a29b" font-family="Arial, sans-serif" font-size="22" font-weight="700">Mushroom-style live cooking, countdown and temperature history for Home Assistant</text>
+  <text x="92" y="154" fill="#a9a29b" font-family="Arial, sans-serif" font-size="22" font-weight="700">Mushroom-style live cooking, app-inspired countdown and temperature history</text>
 
   <g filter="url(#shadow)">
     <rect x="92" y="204" width="596" height="548" rx="34" fill="url(#cool)" stroke="#3a3430"/>
