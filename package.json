@@ -1,0 +1,18 @@
+{
+  "name": "meater-bbq-card",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Home Assistant Lovelace cards for Meater probe sensors.",
+  "scripts": {
+    "check": "node --check meater-bbq-card.js",
+    "validate": "npm run check && python3 -m json.tool hacs.json >/tmp/meater-hacs.json && python3 -m json.tool package.json >/tmp/meater-package.json"
+  },
+  "keywords": [
+    "home-assistant",
+    "hacs",
+    "lovelace",
+    "meater",
+    "bbq"
+  ],
+  "license": "MIT"
+}
