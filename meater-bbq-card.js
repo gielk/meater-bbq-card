@@ -1,6 +1,9 @@
-const MEATER_BBQ_CARD_VERSION = "0.1.0";
+const MEATER_BBQ_CARD_VERSION = "0.2.0";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
+const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
+const MEATER_COUNTDOWN_CARD_TAG = "meater-countdown-card";
+const MEATER_STRIP_CARD_TAG = "meater-strip-card";
 const MEATER_PROBE_CARD_EDITOR_TAG = "meater-probe-card-editor";
 const MEATER_HISTORY_CARD_EDITOR_TAG = "meater-probe-history-card-editor";
 
@@ -195,6 +198,22 @@ const formatRemaining = (stateObj) => {
     return formatDuration(numeric * 60);
   }
   return String(stateObj.state);
+};
+
+const formatFinishTime = (stateObj) => {
+  const timestamp = parsedTimestamp(stateObj?.state);
+  if (timestamp === null) {
+    return "";
+  }
+  return new Date(timestamp).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const formatFinishLabel = (stateObj, fallback = "Meater ETA") => {
+  const finishTime = formatFinishTime(stateObj);
+  return finishTime ? `Ready ${finishTime}` : fallback;
 };
 
 const formatElapsed = (stateObj) => {
@@ -569,6 +588,11 @@ class MeaterBaseCard extends HTMLElement {
           background: var(--meater-soft-green);
         }
 
+        .chip.time {
+          color: var(--meater-hot);
+          background: var(--meater-soft-hot);
+        }
+
         .chip ha-icon,
         .status-pill ha-icon {
           --mdc-icon-size: 18px;
@@ -731,6 +755,184 @@ class MeaterBaseCard extends HTMLElement {
           --mdc-icon-size: 17px;
         }
 
+        .compact-shell {
+          gap: 14px;
+        }
+
+        .compact-hero {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(118px, 0.75fr);
+          gap: 12px;
+          align-items: stretch;
+        }
+
+        .compact-temp,
+        .countdown-panel,
+        .strip-metric {
+          min-width: 0;
+          border-radius: 22px;
+          background: var(--meater-tile-bg);
+          box-sizing: border-box;
+        }
+
+        .compact-temp {
+          display: grid;
+          gap: 2px;
+          padding: 16px;
+          text-align: left;
+          background:
+            linear-gradient(135deg, color-mix(in srgb, var(--meater-hot) 11%, transparent), transparent),
+            var(--meater-tile-bg);
+        }
+
+        .compact-temp-value {
+          font-size: 46px;
+          font-weight: 900;
+          line-height: 0.95;
+        }
+
+        .compact-countdown {
+          min-width: 0;
+          display: grid;
+          align-content: center;
+          gap: 2px;
+          padding: 15px;
+          border-radius: 22px;
+          color: var(--meater-hot);
+          background: var(--meater-soft-hot);
+        }
+
+        .compact-countdown-value {
+          overflow: hidden;
+          color: var(--primary-text-color, #1f1f1f);
+          font-size: 28px;
+          font-weight: 900;
+          line-height: 1;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .compact-meta,
+        .strip-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .countdown-layout {
+          display: grid;
+          grid-template-columns: 150px minmax(0, 1fr);
+          gap: 14px;
+          align-items: stretch;
+        }
+
+        .countdown-orb {
+          min-height: 150px;
+          display: grid;
+          place-items: center;
+          border-radius: 28px;
+          background:
+            radial-gradient(circle at center, var(--ha-card-background, var(--card-background-color, #fff)) 0 55%, transparent 56%),
+            conic-gradient(var(--meater-hot) var(--progress, 0%), color-mix(in srgb, var(--primary-text-color) 10%, transparent) 0);
+        }
+
+        .countdown-orb-inner {
+          display: grid;
+          gap: 3px;
+          text-align: center;
+        }
+
+        .countdown-value {
+          max-width: 118px;
+          overflow: hidden;
+          color: var(--primary-text-color, #1f1f1f);
+          font-size: 31px;
+          font-weight: 900;
+          line-height: 1;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .countdown-panel {
+          display: grid;
+          gap: 12px;
+          padding: 15px;
+        }
+
+        .countdown-stats {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .countdown-stat {
+          min-width: 0;
+          display: grid;
+          gap: 3px;
+          padding: 11px;
+          border-radius: 18px;
+          background: color-mix(in srgb, var(--primary-text-color) 4%, transparent);
+        }
+
+        .countdown-stat strong,
+        .strip-metric strong {
+          overflow: hidden;
+          font-size: 20px;
+          font-weight: 900;
+          line-height: 1.1;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .strip-shell {
+          gap: 12px;
+          padding: 16px;
+        }
+
+        .strip-main {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 12px;
+          align-items: center;
+        }
+
+        .strip-title {
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .strip-icon {
+          width: 44px;
+          height: 44px;
+          display: inline-grid;
+          place-items: center;
+          flex: 0 0 44px;
+          border-radius: 17px;
+          color: var(--meater-hot);
+          background: var(--meater-soft-hot);
+        }
+
+        .strip-temp {
+          font-size: 40px;
+          font-weight: 900;
+          line-height: 0.95;
+          white-space: nowrap;
+        }
+
+        .strip-metrics {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .strip-metric {
+          display: grid;
+          gap: 3px;
+          padding: 11px;
+        }
+
         .chart-wrap {
           min-height: 246px;
           display: grid;
@@ -836,8 +1038,16 @@ class MeaterBaseCard extends HTMLElement {
 
           .time-grid,
           .tile-grid,
-          .stats-grid {
+          .stats-grid,
+          .compact-hero,
+          .countdown-layout,
+          .strip-main,
+          .strip-metrics {
             grid-template-columns: 1fr;
+          }
+
+          .countdown-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
       </style>
@@ -927,6 +1137,10 @@ class MeaterProbeCard extends MeaterBaseCard {
               <span class="current-label">core temperature</span>
             </button>
             <div class="summary-side">
+              <span class="chip time">
+                <ha-icon icon="mdi:timer-sand"></ha-icon>
+                ${html(formatRemaining(remainingState))}
+              </span>
               <span class="chip hot">
                 <ha-icon icon="mdi:grill"></ha-icon>
                 ${html(formatTemperature(ambientState, "--"))}
@@ -994,6 +1208,301 @@ class MeaterProbeCard extends MeaterBaseCard {
         </span>
         <span class="tile-meter" aria-hidden="true"><span style="width: ${width}%"></span></span>
       </button>
+    `;
+  }
+}
+
+class MeaterCompactCard extends MeaterBaseCard {
+  static getStubConfig(hass) {
+    const candidates = findMeaterCoreCandidates(hass);
+    return candidates.length === 1 ? { core_temp: candidates[0] } : {};
+  }
+
+  static getConfigElement() {
+    return document.createElement(MEATER_PROBE_CARD_EDITOR_TAG);
+  }
+
+  getCardSize() {
+    return 4;
+  }
+
+  getGridOptions() {
+    return {
+      rows: 5,
+      columns: 6,
+      min_rows: 4,
+      min_columns: 4,
+    };
+  }
+
+  _render() {
+    if (!this.shadowRoot || !this._hass) {
+      return;
+    }
+    this._entities = this._buildEntities();
+    const coreState = this._state(this._entities.core_temp);
+    if (!coreState) {
+      this._renderEntitySetupHelp(
+        "Meater compact card",
+        "No Meater core temperature sensor could be selected automatically. Select the core temperature entity or set an entity prefix in the card editor.",
+      );
+      return;
+    }
+
+    const ambientState = this._state(this._entities.ambient_temp);
+    const targetState = this._state(this._entities.target_temp);
+    const statusState = this._state(this._entities.cook_status);
+    const cookNameState = this._state(this._entities.cook_name);
+    const remainingState = this._state(this._entities.remaining_time);
+    const core = numericState(coreState);
+    const target = numericState(targetState);
+    const progress = target ? percent(core, target) : 0;
+    const connected = isAvailable(coreState);
+    const status = normalizeLabel(statusState?.state, connected ? "Ready" : "Probe offline");
+    const cookName = normalizeLabel(cookNameState?.state, "Cook");
+    const title =
+      this._config.name ||
+      registryEntry(this._hass, this._entities.core_temp)?.name ||
+      coreState.attributes?.friendly_name ||
+      "Meater probe";
+
+    this.shadowRoot.innerHTML = `
+      ${this._styles()}
+      <ha-card>
+        <div class="meater-shell compact-shell ${connected ? "online" : "offline"}">
+          <header class="meater-header">
+            <span class="header-title">
+              <span class="hero-icon"><ha-icon icon="mdi:food-steak"></ha-icon></span>
+              <span>
+                <span class="eyebrow">${html(cookName)}</span>
+                <span class="title">${html(title)}</span>
+              </span>
+            </span>
+            <span class="status-pill"><span class="status-dot"></span>${html(status)}</span>
+          </header>
+
+          <section class="compact-hero">
+            <button class="compact-temp" data-entity="${html(this._entities.core_temp)}">
+              <span class="time-label">Core</span>
+              <span class="compact-temp-value">${html(formatTemperature(coreState, "--"))}</span>
+            </button>
+            <button class="compact-countdown" data-entity="${html(this._entities.remaining_time)}">
+              <span class="time-label">Remaining</span>
+              <span class="compact-countdown-value">${html(formatRemaining(remainingState))}</span>
+              <span class="time-label">${html(formatFinishLabel(remainingState))}</span>
+            </button>
+          </section>
+
+          <section class="progress-panel">
+            <div class="progress-copy">
+              <span>${html(target ? "Target progress" : "Target not set")}</span>
+              <span>${Math.round(progress)}%</span>
+            </div>
+            <div class="progress-bar" aria-hidden="true"><span style="width: ${progress}%"></span></div>
+          </section>
+
+          <div class="compact-meta">
+            <span class="chip hot"><ha-icon icon="mdi:grill"></ha-icon>${html(formatTemperature(ambientState, "--"))}</span>
+            <span class="chip green"><ha-icon icon="mdi:target"></ha-icon>${html(formatTemperature(targetState, "--"))}</span>
+          </div>
+        </div>
+      </ha-card>
+    `;
+  }
+}
+
+class MeaterCountdownCard extends MeaterBaseCard {
+  static getStubConfig(hass) {
+    const candidates = findMeaterCoreCandidates(hass);
+    return candidates.length === 1 ? { core_temp: candidates[0] } : {};
+  }
+
+  static getConfigElement() {
+    return document.createElement(MEATER_PROBE_CARD_EDITOR_TAG);
+  }
+
+  getCardSize() {
+    return 4;
+  }
+
+  getGridOptions() {
+    return {
+      rows: 5,
+      columns: 6,
+      min_rows: 4,
+      min_columns: 4,
+    };
+  }
+
+  _render() {
+    if (!this.shadowRoot || !this._hass) {
+      return;
+    }
+    this._entities = this._buildEntities();
+    const coreState = this._state(this._entities.core_temp);
+    if (!coreState) {
+      this._renderEntitySetupHelp(
+        "Meater countdown card",
+        "No Meater core temperature sensor could be selected automatically. Select the core temperature entity or set an entity prefix in the card editor.",
+      );
+      return;
+    }
+
+    const ambientState = this._state(this._entities.ambient_temp);
+    const targetState = this._state(this._entities.target_temp);
+    const statusState = this._state(this._entities.cook_status);
+    const remainingState = this._state(this._entities.remaining_time);
+    const elapsedState = this._state(this._entities.elapsed_time);
+    const core = numericState(coreState);
+    const target = numericState(targetState);
+    const progress = target ? percent(core, target) : 0;
+    const connected = isAvailable(coreState);
+    const status = normalizeLabel(statusState?.state, connected ? "Cooking" : "Probe offline");
+    const title = this._config.name || "Meater countdown";
+
+    this.shadowRoot.innerHTML = `
+      ${this._styles()}
+      <ha-card>
+        <div class="meater-shell ${connected ? "online" : "offline"}">
+          <header class="meater-header">
+            <span class="header-title">
+              <span class="hero-icon"><ha-icon icon="mdi:timer-sand"></ha-icon></span>
+              <span>
+                <span class="eyebrow">${html(status)}</span>
+                <span class="title">${html(title)}</span>
+              </span>
+            </span>
+            <span class="status-pill"><span class="status-dot"></span>${html(Math.round(progress))}%</span>
+          </header>
+
+          <section class="countdown-layout">
+            <button class="countdown-orb" style="--progress: ${progress}%" data-entity="${html(this._entities.remaining_time)}">
+              <span class="countdown-orb-inner">
+                <span class="time-label">Remaining</span>
+                <span class="countdown-value">${html(formatRemaining(remainingState))}</span>
+                <span class="time-label">${html(formatFinishLabel(remainingState, "ETA"))}</span>
+              </span>
+            </button>
+            <div class="countdown-panel">
+              <div class="countdown-stats">
+                <button class="countdown-stat" data-entity="${html(this._entities.core_temp)}">
+                  <span class="time-label">Core</span>
+                  <strong>${html(formatTemperature(coreState, "--"))}</strong>
+                </button>
+                <button class="countdown-stat" data-entity="${html(this._entities.target_temp)}">
+                  <span class="time-label">Target</span>
+                  <strong>${html(formatTemperature(targetState, "--"))}</strong>
+                </button>
+                <button class="countdown-stat" data-entity="${html(this._entities.ambient_temp)}">
+                  <span class="time-label">BBQ</span>
+                  <strong>${html(formatTemperature(ambientState, "--"))}</strong>
+                </button>
+              </div>
+              <section class="progress-panel">
+                <div class="progress-copy">
+                  <span>Cook progress</span>
+                  <span>${Math.round(progress)}%</span>
+                </div>
+                <div class="progress-bar" aria-hidden="true"><span style="width: ${progress}%"></span></div>
+              </section>
+              <div class="status-line">
+                <ha-icon icon="mdi:clock-start"></ha-icon>
+                <span>Elapsed ${html(formatElapsed(elapsedState))}</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </ha-card>
+    `;
+  }
+}
+
+class MeaterStripCard extends MeaterBaseCard {
+  static getStubConfig(hass) {
+    const candidates = findMeaterCoreCandidates(hass);
+    return candidates.length === 1 ? { core_temp: candidates[0] } : {};
+  }
+
+  static getConfigElement() {
+    return document.createElement(MEATER_PROBE_CARD_EDITOR_TAG);
+  }
+
+  getCardSize() {
+    return 3;
+  }
+
+  getGridOptions() {
+    return {
+      rows: 3,
+      columns: 12,
+      min_rows: 2,
+      min_columns: 6,
+    };
+  }
+
+  _render() {
+    if (!this.shadowRoot || !this._hass) {
+      return;
+    }
+    this._entities = this._buildEntities();
+    const coreState = this._state(this._entities.core_temp);
+    if (!coreState) {
+      this._renderEntitySetupHelp(
+        "Meater strip card",
+        "No Meater core temperature sensor could be selected automatically. Select the core temperature entity or set an entity prefix in the card editor.",
+      );
+      return;
+    }
+
+    const ambientState = this._state(this._entities.ambient_temp);
+    const targetState = this._state(this._entities.target_temp);
+    const statusState = this._state(this._entities.cook_status);
+    const remainingState = this._state(this._entities.remaining_time);
+    const core = numericState(coreState);
+    const target = numericState(targetState);
+    const progress = target ? percent(core, target) : 0;
+    const connected = isAvailable(coreState);
+    const status = normalizeLabel(statusState?.state, connected ? "Ready" : "Probe offline");
+    const title =
+      this._config.name ||
+      registryEntry(this._hass, this._entities.core_temp)?.name ||
+      coreState.attributes?.friendly_name ||
+      "Meater probe";
+
+    this.shadowRoot.innerHTML = `
+      ${this._styles()}
+      <ha-card>
+        <div class="meater-shell strip-shell ${connected ? "online" : "offline"}">
+          <section class="strip-main">
+            <span class="strip-title">
+              <span class="strip-icon"><ha-icon icon="mdi:food-steak"></ha-icon></span>
+              <span>
+                <span class="eyebrow">${html(status)}</span>
+                <span class="title">${html(title)}</span>
+              </span>
+            </span>
+            <button class="temperature-focus" data-entity="${html(this._entities.core_temp)}">
+              <span class="strip-temp">${html(formatTemperature(coreState, "--"))}</span>
+            </button>
+          </section>
+
+          <section class="strip-metrics">
+            <button class="strip-metric" data-entity="${html(this._entities.remaining_time)}">
+              <span class="time-label">Remaining</span>
+              <strong>${html(formatRemaining(remainingState))}</strong>
+            </button>
+            <button class="strip-metric" data-entity="${html(this._entities.ambient_temp)}">
+              <span class="time-label">BBQ</span>
+              <strong>${html(formatTemperature(ambientState, "--"))}</strong>
+            </button>
+            <button class="strip-metric" data-entity="${html(this._entities.target_temp)}">
+              <span class="time-label">Target</span>
+              <strong>${html(formatTemperature(targetState, "--"))}</strong>
+            </button>
+          </section>
+          <div class="progress-bar" aria-hidden="true"><span style="width: ${progress}%"></span></div>
+        </div>
+      </ha-card>
     `;
   }
 }
@@ -1340,6 +1849,15 @@ if (!customElements.get(MEATER_PROBE_CARD_TAG)) {
 if (!customElements.get(MEATER_HISTORY_CARD_TAG)) {
   customElements.define(MEATER_HISTORY_CARD_TAG, MeaterProbeHistoryCard);
 }
+if (!customElements.get(MEATER_COMPACT_CARD_TAG)) {
+  customElements.define(MEATER_COMPACT_CARD_TAG, MeaterCompactCard);
+}
+if (!customElements.get(MEATER_COUNTDOWN_CARD_TAG)) {
+  customElements.define(MEATER_COUNTDOWN_CARD_TAG, MeaterCountdownCard);
+}
+if (!customElements.get(MEATER_STRIP_CARD_TAG)) {
+  customElements.define(MEATER_STRIP_CARD_TAG, MeaterStripCard);
+}
 if (!customElements.get(MEATER_PROBE_CARD_EDITOR_TAG)) {
   customElements.define(MEATER_PROBE_CARD_EDITOR_TAG, MeaterProbeCardEditor);
 }
@@ -1359,6 +1877,24 @@ window.customCards.push(
     type: MEATER_HISTORY_CARD_TAG,
     name: "Meater Probe History",
     description: "BBQ-style temperature history card for Meater probes.",
+    documentationURL: "https://github.com/gielk/meater-bbq-card",
+  },
+  {
+    type: MEATER_COMPACT_CARD_TAG,
+    name: "Meater Compact Card",
+    description: "Compact Meater card with core temperature, remaining time, target, and BBQ temperature.",
+    documentationURL: "https://github.com/gielk/meater-bbq-card",
+  },
+  {
+    type: MEATER_COUNTDOWN_CARD_TAG,
+    name: "Meater Countdown Card",
+    description: "Remaining-time first Meater card for active cooks.",
+    documentationURL: "https://github.com/gielk/meater-bbq-card",
+  },
+  {
+    type: MEATER_STRIP_CARD_TAG,
+    name: "Meater Strip Card",
+    description: "Slim Meater dashboard strip with core, remaining time, BBQ, and target values.",
     documentationURL: "https://github.com/gielk/meater-bbq-card",
   },
 );

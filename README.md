@@ -2,10 +2,13 @@
 
 Mushroom-style Lovelace cards for Meater probe sensors in Home Assistant.
 
-The repository ships two frontend cards:
+The repository ships five frontend cards:
 
 - `custom:meater-probe-card` for live core temperature, ambient temperature, target, timing, status, and progress.
 - `custom:meater-probe-history-card` for BBQ-style temperature history.
+- `custom:meater-compact-card` for a smaller live tile with remaining time.
+- `custom:meater-countdown-card` for a remaining-time first cooking card.
+- `custom:meater-strip-card` for a slim section/dashboard status strip.
 
 ![Meater BBQ cards preview](docs/images/preview.svg)
 
@@ -37,7 +40,7 @@ type: module
 
 ## Quick Start
 
-After installation, the cards are available in the Home Assistant card picker as `Meater Probe Card` and `Meater Probe History`.
+After installation, the cards are available in the Home Assistant card picker as `Meater Probe Card`, `Meater Probe History`, `Meater Compact Card`, `Meater Countdown Card`, and `Meater Strip Card`.
 
 For a single Meater probe, the cards usually auto-detect the sensor set:
 
@@ -51,6 +54,29 @@ Add the history card below it:
 type: custom:meater-probe-history-card
 hours_to_show: 3
 refresh_interval: 300
+```
+
+## Alternative Cards
+
+Use the compact card when you want a tile-style card that still shows the important values, including `remaining_time`:
+
+```yaml
+type: custom:meater-compact-card
+entity_prefix: meater_probe_ac7269c8
+```
+
+Use the countdown card when the remaining cook time should be the main visual focus:
+
+```yaml
+type: custom:meater-countdown-card
+entity_prefix: meater_probe_ac7269c8
+```
+
+Use the strip card for a slim dashboard row:
+
+```yaml
+type: custom:meater-strip-card
+entity_prefix: meater_probe_ac7269c8
 ```
 
 ## Entity Matching
@@ -82,6 +108,16 @@ type: custom:meater-probe-card
 entity_prefix: meater_probe_ac7269c8
 ```
 
+You can also explicitly configure the remaining time sensor. This is useful if your Meater integration uses a translated entity name:
+
+```yaml
+type: custom:meater-countdown-card
+core_temp: sensor.meater_probe_ac7269c8_interne_temperatuur
+ambient_temp: sensor.meater_probe_ac7269c8_omgevingstemperatuur
+target_temp: sensor.meater_probe_ac7269c8_doeltemperatuur
+remaining_time: sensor.meater_probe_ac7269c8_resterende_tijd
+```
+
 ## Full Example
 
 ```yaml
@@ -90,6 +126,10 @@ title: Meater
 sections:
   - cards:
       - type: custom:meater-probe-card
+        entity_prefix: meater_probe_ac7269c8
+      - type: custom:meater-countdown-card
+        entity_prefix: meater_probe_ac7269c8
+      - type: custom:meater-strip-card
         entity_prefix: meater_probe_ac7269c8
   - cards:
       - type: custom:meater-probe-history-card
