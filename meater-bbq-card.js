@@ -1,4 +1,4 @@
-const MEATER_BBQ_CARD_VERSION = "0.3.0";
+const MEATER_BBQ_CARD_VERSION = "0.3.1";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
 const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
@@ -366,6 +366,21 @@ class MeaterBaseCard extends HTMLElement {
 
   _buildEntities() {
     return buildMeaterEntities(this._config, this._hass);
+  }
+
+  _isNarrowLayout() {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return false;
+    }
+    return window.matchMedia("(max-width: 520px)").matches;
+  }
+
+  _cardSize(desktopSize, mobileSize = desktopSize) {
+    return this._isNarrowLayout() ? mobileSize : desktopSize;
+  }
+
+  _gridRows(desktopRows, mobileRows = desktopRows) {
+    return this._isNarrowLayout() ? mobileRows : desktopRows;
   }
 
   _state(entityId) {
@@ -1216,14 +1231,15 @@ class MeaterProbeCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return 9;
+    return this._cardSize(9, 13);
   }
 
   getGridOptions() {
+    const narrow = this._isNarrowLayout();
     return {
-      rows: 10,
+      rows: this._gridRows(10, 14),
       columns: 12,
-      min_rows: 7,
+      min_rows: narrow ? 12 : 7,
       min_columns: 6,
     };
   }
@@ -1373,14 +1389,15 @@ class MeaterCompactCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return 4;
+    return this._cardSize(4, 6);
   }
 
   getGridOptions() {
+    const narrow = this._isNarrowLayout();
     return {
-      rows: 5,
+      rows: this._gridRows(5, 7),
       columns: 6,
-      min_rows: 4,
+      min_rows: narrow ? 6 : 4,
       min_columns: 4,
     };
   }
@@ -1472,14 +1489,15 @@ class MeaterCountdownCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return 4;
+    return this._cardSize(4, 7);
   }
 
   getGridOptions() {
+    const narrow = this._isNarrowLayout();
     return {
-      rows: 5,
+      rows: this._gridRows(5, 8),
       columns: 6,
-      min_rows: 4,
+      min_rows: narrow ? 7 : 4,
       min_columns: 4,
     };
   }
@@ -1578,14 +1596,15 @@ class MeaterStripCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return 3;
+    return this._cardSize(3, 6);
   }
 
   getGridOptions() {
+    const narrow = this._isNarrowLayout();
     return {
-      rows: 3,
+      rows: this._gridRows(3, 6),
       columns: 12,
-      min_rows: 2,
+      min_rows: narrow ? 5 : 2,
       min_columns: 6,
     };
   }
@@ -1826,14 +1845,15 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return 7;
+    return this._cardSize(7, 11);
   }
 
   getGridOptions() {
+    const narrow = this._isNarrowLayout();
     return {
-      rows: 8,
+      rows: this._gridRows(8, 12),
       columns: 12,
-      min_rows: 6,
+      min_rows: narrow ? 10 : 6,
       min_columns: 6,
     };
   }
