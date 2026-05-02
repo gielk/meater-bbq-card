@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.2 - 2026-05-02
+
+- Fixed Sections view card overlap by switching the Meater cards to auto-height grid rows instead of fixed row spans.
+- This makes the probe, compact, countdown, strip, app, and history cards follow their intrinsic height more reliably across responsive section widths.
+
 ## v0.3.1 - 2026-05-02
 
 - Fixed mobile dashboard overlap by increasing Home Assistant size hints for cards that stack into single-column layouts on narrow screens.

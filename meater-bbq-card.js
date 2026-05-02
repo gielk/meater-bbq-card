@@ -1,4 +1,4 @@
-const MEATER_BBQ_CARD_VERSION = "0.3.1";
+const MEATER_BBQ_CARD_VERSION = "0.3.2";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
 const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
@@ -377,10 +377,6 @@ class MeaterBaseCard extends HTMLElement {
 
   _cardSize(desktopSize, mobileSize = desktopSize) {
     return this._isNarrowLayout() ? mobileSize : desktopSize;
-  }
-
-  _gridRows(desktopRows, mobileRows = desktopRows) {
-    return this._isNarrowLayout() ? mobileRows : desktopRows;
   }
 
   _state(entityId) {
@@ -1235,11 +1231,10 @@ class MeaterProbeCard extends MeaterBaseCard {
   }
 
   getGridOptions() {
-    const narrow = this._isNarrowLayout();
     return {
-      rows: this._gridRows(10, 14),
+      rows: "auto",
       columns: 12,
-      min_rows: narrow ? 12 : 7,
+      min_rows: 7,
       min_columns: 6,
     };
   }
@@ -1393,11 +1388,10 @@ class MeaterCompactCard extends MeaterBaseCard {
   }
 
   getGridOptions() {
-    const narrow = this._isNarrowLayout();
     return {
-      rows: this._gridRows(5, 7),
+      rows: "auto",
       columns: 6,
-      min_rows: narrow ? 6 : 4,
+      min_rows: 4,
       min_columns: 4,
     };
   }
@@ -1493,11 +1487,10 @@ class MeaterCountdownCard extends MeaterBaseCard {
   }
 
   getGridOptions() {
-    const narrow = this._isNarrowLayout();
     return {
-      rows: this._gridRows(5, 8),
+      rows: "auto",
       columns: 6,
-      min_rows: narrow ? 7 : 4,
+      min_rows: 4,
       min_columns: 4,
     };
   }
@@ -1600,11 +1593,10 @@ class MeaterStripCard extends MeaterBaseCard {
   }
 
   getGridOptions() {
-    const narrow = this._isNarrowLayout();
     return {
-      rows: this._gridRows(3, 6),
+      rows: "auto",
       columns: 12,
-      min_rows: narrow ? 5 : 2,
+      min_rows: 2,
       min_columns: 6,
     };
   }
@@ -1692,7 +1684,7 @@ class MeaterAppCard extends MeaterBaseCard {
 
   getGridOptions() {
     return {
-      rows: 8,
+      rows: "auto",
       columns: 6,
       min_rows: 6,
       min_columns: 4,
@@ -1849,11 +1841,10 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
   }
 
   getGridOptions() {
-    const narrow = this._isNarrowLayout();
     return {
-      rows: this._gridRows(8, 12),
+      rows: "auto",
       columns: 12,
-      min_rows: narrow ? 10 : 6,
+      min_rows: 6,
       min_columns: 6,
     };
   }
