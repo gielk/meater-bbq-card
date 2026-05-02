@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.6 - 2026-05-02
+
+- Switched the visual editor color fields to Home Assistant's native color picker so shared, app, and history colors are easier to configure.
+
 ## v0.3.5 - 2026-05-02
 
 - Fixed the visual editors so styling and history options show their effective default values instead of empty fields.

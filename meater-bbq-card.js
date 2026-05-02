@@ -2240,11 +2240,11 @@ class MeaterCardEditor extends HTMLElement {
 
   _styleSchema({ includeAppStyle = false, includeChartStyle = false } = {}) {
     const schema = [
-      { name: "hot_color", selector: { text: {} } },
-      { name: "ember_color", selector: { text: {} } },
-      { name: "steak_color", selector: { text: {} } },
-      { name: "green_color", selector: { text: {} } },
-      { name: "cool_color", selector: { text: {} } },
+      { name: "hot_color", selector: { ui_color: {} } },
+      { name: "ember_color", selector: { ui_color: {} } },
+      { name: "steak_color", selector: { ui_color: {} } },
+      { name: "green_color", selector: { ui_color: {} } },
+      { name: "cool_color", selector: { ui_color: {} } },
       { name: "progress_bar_height", selector: { number: { min: 2, max: 24, mode: "box" } } },
       { name: "tile_meter_height", selector: { number: { min: 1, max: 12, mode: "box" } } },
     ];
@@ -2252,18 +2252,18 @@ class MeaterCardEditor extends HTMLElement {
     if (includeAppStyle) {
       schema.push(
         { name: "app_arc_width", selector: { number: { min: 6, max: 48, mode: "box" } } },
-        { name: "app_core_color", selector: { text: {} } },
-        { name: "app_target_color", selector: { text: {} } },
-        { name: "app_ambient_color", selector: { text: {} } },
+        { name: "app_core_color", selector: { ui_color: {} } },
+        { name: "app_target_color", selector: { ui_color: {} } },
+        { name: "app_ambient_color", selector: { ui_color: {} } },
       );
     }
 
     if (includeChartStyle) {
       schema.push(
         { name: "chart_line_width", selector: { number: { min: 1, max: 12, mode: "box" } } },
-        { name: "core_line_color", selector: { text: {} } },
-        { name: "ambient_line_color", selector: { text: {} } },
-        { name: "target_line_color", selector: { text: {} } },
+        { name: "core_line_color", selector: { ui_color: {} } },
+        { name: "ambient_line_color", selector: { ui_color: {} } },
+        { name: "target_line_color", selector: { ui_color: {} } },
       );
     }
 

@@ -190,6 +190,8 @@ sections:
 
 ### Shared Style Options
 
+In the visual editor, color fields use Home Assistant's built-in color picker.
+
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `hot_color` | string | `#ff6b2c` | Main warm accent used across cards. |
