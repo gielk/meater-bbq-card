@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.5 - 2026-05-02
+
+- Fixed the visual editors so styling and history options show their effective default values instead of empty fields.
+- Kept the saved card config clean by stripping unchanged default values back out when editing.
+
 ## v0.3.4 - 2026-05-02
 
 - Fixed the Meater app card so the target pointer stays at 12 o'clock while the core and ambient pointers move with their temperatures.

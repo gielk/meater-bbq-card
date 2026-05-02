@@ -1,4 +1,4 @@
-const MEATER_BBQ_CARD_VERSION = "0.3.4";
+const MEATER_BBQ_CARD_VERSION = "0.3.5";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
 const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
@@ -2192,6 +2192,52 @@ class MeaterCardEditor extends HTMLElement {
     this._render();
   }
 
+  _editorDefaults(config = this._config) {
+    return {
+      hot_color: "#ff6b2c",
+      ember_color: "#ffb300",
+      steak_color: "#d84315",
+      green_color: "#43a047",
+      cool_color: "#00a6a6",
+      progress_bar_height: 11,
+      tile_meter_height: 5,
+    };
+  }
+
+  _formData() {
+    return {
+      ...this._editorDefaults(this._config),
+      ...this._config,
+    };
+  }
+
+  _pruneDefaultConfig(config) {
+    const nextConfig = { ...(config ?? {}) };
+    const defaults = this._editorDefaults(nextConfig);
+
+    for (const [key, defaultValue] of Object.entries(defaults)) {
+      const value = nextConfig[key];
+
+      if (value === "" || value === null || value === undefined) {
+        delete nextConfig[key];
+        continue;
+      }
+
+      if (typeof defaultValue === "number") {
+        if (Number(value) === defaultValue) {
+          delete nextConfig[key];
+        }
+        continue;
+      }
+
+      if (value === defaultValue) {
+        delete nextConfig[key];
+      }
+    }
+
+    return nextConfig;
+  }
+
   _styleSchema({ includeAppStyle = false, includeChartStyle = false } = {}) {
     const schema = [
       { name: "hot_color", selector: { text: {} } },
@@ -2248,12 +2294,12 @@ class MeaterCardEditor extends HTMLElement {
     `;
     const form = this.shadowRoot.querySelector("ha-form");
     form.hass = this._hass;
-    form.data = this._config;
+    form.data = this._formData();
     form.schema = schema;
     form.computeLabel = (schemaItem) => labels[schemaItem.name] || schemaItem.name;
     form.addEventListener("value-changed", (event) => {
       event.stopPropagation();
-      this._config = event.detail.value;
+      this._config = this._pruneDefaultConfig(event.detail.value);
       this.dispatchEvent(
         new CustomEvent("config-changed", {
           detail: { config: this._config },
@@ -2272,12 +2318,36 @@ class MeaterProbeCardEditor extends MeaterCardEditor {
 }
 
 class MeaterAppCardEditor extends MeaterCardEditor {
+  _editorDefaults(config = this._config) {
+    const defaults = super._editorDefaults(config);
+    return {
+      ...defaults,
+      app_arc_width: 30,
+      app_core_color: "#b735d6",
+      app_target_color: "#39b6ff",
+      app_ambient_color: config.green_color ?? defaults.green_color,
+    };
+  }
+
   _render() {
     this._renderForm(this._schema([], { includeAppStyle: true }), this._labels());
   }
 }
 
 class MeaterHistoryCardEditor extends MeaterCardEditor {
+  _editorDefaults(config = this._config) {
+    const defaults = super._editorDefaults(config);
+    return {
+      ...defaults,
+      hours_to_show: 3,
+      refresh_interval: 300,
+      chart_line_width: 4,
+      core_line_color: config.hot_color ?? defaults.hot_color,
+      ambient_line_color: config.ember_color ?? defaults.ember_color,
+      target_line_color: config.green_color ?? defaults.green_color,
+    };
+  }
+
   _render() {
     this._renderForm(
       this._schema([
