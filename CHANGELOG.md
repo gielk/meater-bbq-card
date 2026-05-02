@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.3 - 2026-05-02
+
+- Fixed Home Assistant Sections sizing for the compact, strip, and app cards by aligning their reported height with the rendered card height.
+- Made all Meater cards default to a full 12-column width in the layout editor while keeping lower minimum widths where manual shrinking is allowed.
+
 ## v0.3.2 - 2026-05-02
 
 - Fixed Sections view card overlap by switching the Meater cards to auto-height grid rows instead of fixed row spans.

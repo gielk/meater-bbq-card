@@ -1,4 +1,4 @@
-const MEATER_BBQ_CARD_VERSION = "0.3.2";
+const MEATER_BBQ_CARD_VERSION = "0.3.3";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
 const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
@@ -1384,14 +1384,14 @@ class MeaterCompactCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return this._cardSize(4, 6);
+    return this._cardSize(6, 7);
   }
 
   getGridOptions() {
     return {
       rows: "auto",
-      columns: 6,
-      min_rows: 4,
+      columns: 12,
+      min_rows: 6,
       min_columns: 4,
     };
   }
@@ -1489,7 +1489,7 @@ class MeaterCountdownCard extends MeaterBaseCard {
   getGridOptions() {
     return {
       rows: "auto",
-      columns: 6,
+      columns: 12,
       min_rows: 4,
       min_columns: 4,
     };
@@ -1589,14 +1589,14 @@ class MeaterStripCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return this._cardSize(3, 6);
+    return this._cardSize(4, 6);
   }
 
   getGridOptions() {
     return {
       rows: "auto",
       columns: 12,
-      min_rows: 2,
+      min_rows: 4,
       min_columns: 6,
     };
   }
@@ -1679,14 +1679,14 @@ class MeaterAppCard extends MeaterBaseCard {
   }
 
   getCardSize() {
-    return 7;
+    return this._cardSize(9, 10);
   }
 
   getGridOptions() {
     return {
       rows: "auto",
-      columns: 6,
-      min_rows: 6,
+      columns: 12,
+      min_rows: 9,
       min_columns: 4,
     };
   }
