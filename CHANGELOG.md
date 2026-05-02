@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.4 - 2026-05-02
+
+- Fixed the Meater app card so the target pointer stays at 12 o'clock while the core and ambient pointers move with their temperatures.
+- Fixed the history card to parse Home Assistant's compact history websocket response correctly, so charts render points again.
+- Added configurable styling across the cards, including shared palette colors, progress bar thickness, tile meter thickness, app arc width, app pointer/bubble colors, and history chart line styling.
+
 ## v0.3.3 - 2026-05-02
 
 - Fixed Home Assistant Sections sizing for the compact, strip, and app cards by aligning their reported height with the rendered card height.

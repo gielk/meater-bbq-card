@@ -57,6 +57,10 @@ Add the history card below it:
 type: custom:meater-probe-history-card
 hours_to_show: 3
 refresh_interval: 300
+chart_line_width: 4
+core_line_color: "#ff6b2c"
+ambient_line_color: "#ffb300"
+target_line_color: "#43a047"
 ```
 
 ## Alternative Cards
@@ -87,6 +91,22 @@ Use the app card when you want a MEATER-app inspired layout with round internal,
 ```yaml
 type: custom:meater-app-card
 entity_prefix: meater_probe_ac7269c8
+```
+
+You can also restyle the cards with shared palette and thickness settings:
+
+```yaml
+type: custom:meater-app-card
+entity_prefix: meater_probe_ac7269c8
+hot_color: "#ff5500"
+steak_color: "#991100"
+green_color: "#22aa55"
+progress_bar_height: 14
+tile_meter_height: 7
+app_arc_width: 36
+app_core_color: "#8a00ff"
+app_target_color: "#0099ff"
+app_ambient_color: "#00cc44"
 ```
 
 ## Entity Matching
@@ -168,12 +188,37 @@ sections:
 | `remaining_time` | entity | Remaining time or estimated finish sensor. |
 | `elapsed_time` | entity | Elapsed time or start time sensor. |
 
+### Shared Style Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `hot_color` | string | `#ff6b2c` | Main warm accent used across cards. |
+| `ember_color` | string | `#ffb300` | Ember/yellow accent used for ambient highlights and gradients. |
+| `steak_color` | string | `#d84315` | Deep hot accent used in gradients and core highlights. |
+| `green_color` | string | `#43a047` | Green accent used for target and online states. |
+| `cool_color` | string | `#00a6a6` | Cool accent used for secondary visuals. |
+| `progress_bar_height` | number | `11` | Thickness of the main progress bars. |
+| `tile_meter_height` | number | `5` | Thickness of the small meter line in tile-based cards. |
+
+### App Card Style Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `app_arc_width` | number | `30` | Stroke width of the app card half-arc. |
+| `app_core_color` | string | `#b735d6` | Color for the app card core pointer and bubble. |
+| `app_target_color` | string | `#39b6ff` | Color for the app card target pointer and bubble. |
+| `app_ambient_color` | string | `#43a047` | Color for the app card ambient pointer and bubble. |
+
 ### History Card Options
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `hours_to_show` | number | `3` | History window in hours. |
 | `refresh_interval` | number | `300` | Refresh interval in seconds. |
+| `chart_line_width` | number | `4` | Stroke width for the three history graph lines. |
+| `core_line_color` | string | `hot_color` | Color for the core/internal temperature line. |
+| `ambient_line_color` | string | `ember_color` | Color for the ambient/BBQ temperature line. |
+| `target_line_color` | string | `green_color` | Color for the target temperature line. |
 
 ## Notes
 

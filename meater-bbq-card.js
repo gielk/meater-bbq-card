@@ -1,4 +1,4 @@
-const MEATER_BBQ_CARD_VERSION = "0.3.3";
+const MEATER_BBQ_CARD_VERSION = "0.3.4";
 const MEATER_PROBE_CARD_TAG = "meater-probe-card";
 const MEATER_HISTORY_CARD_TAG = "meater-probe-history-card";
 const MEATER_COMPACT_CARD_TAG = "meater-compact-card";
@@ -7,6 +7,7 @@ const MEATER_STRIP_CARD_TAG = "meater-strip-card";
 const MEATER_APP_CARD_TAG = "meater-app-card";
 const MEATER_PROBE_CARD_EDITOR_TAG = "meater-probe-card-editor";
 const MEATER_HISTORY_CARD_EDITOR_TAG = "meater-probe-history-card-editor";
+const MEATER_APP_CARD_EDITOR_TAG = "meater-app-card-editor";
 
 const UNAVAILABLE_STATES = new Set(["unknown", "unavailable", "", null, undefined]);
 
@@ -108,6 +109,21 @@ const EDITOR_LABELS = {
   elapsed_time: "Elapsed / start time",
   hours_to_show: "Hours to show",
   refresh_interval: "Refresh interval",
+  hot_color: "Hot accent color",
+  ember_color: "Ember accent color",
+  steak_color: "Steak accent color",
+  green_color: "Green accent color",
+  cool_color: "Cool accent color",
+  progress_bar_height: "Progress bar height",
+  tile_meter_height: "Tile meter height",
+  app_arc_width: "App arc width",
+  app_core_color: "App core color",
+  app_target_color: "App target color",
+  app_ambient_color: "App ambient color",
+  chart_line_width: "Chart line width",
+  core_line_color: "Core line color",
+  ambient_line_color: "Ambient line color",
+  target_line_color: "Target line color",
 };
 
 const html = (value) =>
@@ -237,6 +253,25 @@ const normalizeLabel = (value, fallback) => {
     return fallback;
   }
   return String(value).replace(/_/g, " ").replace(/^\w/, (char) => char.toUpperCase());
+};
+
+const cssColor = (value, fallback) => {
+  const text = String(value ?? "").trim();
+  if (!text) {
+    return fallback;
+  }
+  if (typeof CSS === "undefined" || typeof CSS.supports !== "function") {
+    return text;
+  }
+  return CSS.supports("color", text) ? text : fallback;
+};
+
+const boundedNumber = (value, fallback, min, max) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return fallback;
+  }
+  return Math.max(min, Math.min(max, numeric));
 };
 
 const definitionMatches = (entityId, key) => {
@@ -379,6 +414,14 @@ class MeaterBaseCard extends HTMLElement {
     return this._isNarrowLayout() ? mobileSize : desktopSize;
   }
 
+  _configColor(key, fallback) {
+    return cssColor(this._config?.[key], fallback);
+  }
+
+  _configNumber(key, fallback, min, max) {
+    return boundedNumber(this._config?.[key], fallback, min, max);
+  }
+
   _state(entityId) {
     return entityId ? this._hass?.states?.[entityId] : undefined;
   }
@@ -426,15 +469,35 @@ class MeaterBaseCard extends HTMLElement {
   }
 
   _styles() {
+    const hotColor = this._configColor("hot_color", "#ff6b2c");
+    const emberColor = this._configColor("ember_color", "#ffb300");
+    const steakColor = this._configColor("steak_color", "#d84315");
+    const greenColor = this._configColor("green_color", "#43a047");
+    const coolColor = this._configColor("cool_color", "#00a6a6");
+    const progressBarHeight = this._configNumber("progress_bar_height", 11, 2, 24);
+    const tileMeterHeight = this._configNumber("tile_meter_height", 5, 1, 12);
+    const appArcWidth = this._configNumber("app_arc_width", 30, 6, 48);
+    const appCoreColor = this._configColor("app_core_color", "#b735d6");
+    const appTargetColor = this._configColor("app_target_color", "#39b6ff");
+    const appAmbientColor = this._configColor("app_ambient_color", greenColor);
+    const chartLineWidth = this._configNumber("chart_line_width", 4, 1, 12);
+
     return `
       <style>
         :host {
           display: block;
-          --meater-hot: #ff6b2c;
-          --meater-ember: #ffb300;
-          --meater-steak: #d84315;
-          --meater-green: #43a047;
-          --meater-cool: #00a6a6;
+          --meater-hot: ${hotColor};
+          --meater-ember: ${emberColor};
+          --meater-steak: ${steakColor};
+          --meater-green: ${greenColor};
+          --meater-cool: ${coolColor};
+          --meater-progress-height: ${progressBarHeight}px;
+          --meater-tile-meter-height: ${tileMeterHeight}px;
+          --meater-app-arc-width: ${appArcWidth}px;
+          --meater-app-core: ${appCoreColor};
+          --meater-app-target: ${appTargetColor};
+          --meater-app-ambient: ${appAmbientColor};
+          --meater-chart-line-width: ${chartLineWidth}px;
           --meater-muted: var(--secondary-text-color, #727272);
           --meater-tile-bg: color-mix(in srgb, var(--primary-text-color) 5%, transparent);
           --meater-soft-hot: color-mix(in srgb, var(--meater-hot) 17%, transparent);
@@ -638,7 +701,7 @@ class MeaterBaseCard extends HTMLElement {
         }
 
         .progress-bar {
-          height: 11px;
+          height: var(--meater-progress-height);
         }
 
         .progress-bar span,
@@ -750,7 +813,7 @@ class MeaterBaseCard extends HTMLElement {
           left: 12px;
           right: 12px;
           bottom: 9px;
-          height: 5px;
+          height: var(--meater-tile-meter-height);
         }
 
         .status-line {
@@ -979,15 +1042,15 @@ class MeaterBaseCard extends HTMLElement {
         }
 
         .app-bubble-value.core {
-          background: linear-gradient(135deg, #b735d6, var(--meater-steak));
+          background: linear-gradient(135deg, var(--meater-app-core), var(--meater-steak));
         }
 
         .app-bubble-value.target {
-          background: linear-gradient(135deg, #39b6ff, var(--meater-cool));
+          background: linear-gradient(135deg, var(--meater-app-target), var(--meater-cool));
         }
 
         .app-bubble-value.ambient {
-          background: linear-gradient(135deg, #66d24f, var(--meater-green));
+          background: linear-gradient(135deg, var(--meater-app-ambient), var(--meater-green));
         }
 
         .app-cook-title {
@@ -1018,32 +1081,36 @@ class MeaterBaseCard extends HTMLElement {
         .app-arc-track {
           fill: none;
           stroke: color-mix(in srgb, var(--primary-text-color) 10%, transparent);
-          stroke-width: 30;
+          stroke-width: var(--meater-app-arc-width);
           stroke-linecap: round;
         }
 
         .app-arc-fill {
           fill: none;
           stroke: url(#meater-app-arc-gradient);
-          stroke-width: 30;
+          stroke-width: var(--meater-app-arc-width);
           stroke-linecap: round;
           transition: stroke-dashoffset 250ms ease;
         }
 
         .app-pointer {
+          stroke: var(--ha-card-background, var(--card-background-color, #fff));
+          stroke-width: 6;
+          stroke-linejoin: round;
+          paint-order: stroke fill;
           filter: drop-shadow(0 4px 7px color-mix(in srgb, var(--primary-text-color) 18%, transparent));
         }
 
         .app-pointer.core {
-          fill: #b735d6;
+          fill: var(--meater-app-core);
         }
 
         .app-pointer.target {
-          fill: #39b6ff;
+          fill: var(--meater-app-target);
         }
 
         .app-pointer.ambient {
-          fill: var(--meater-green);
+          fill: var(--meater-app-ambient);
         }
 
         .app-center {
@@ -1117,7 +1184,7 @@ class MeaterBaseCard extends HTMLElement {
 
         .chart-path {
           fill: none;
-          stroke-width: 4;
+          stroke-width: var(--meater-chart-line-width);
           stroke-linecap: round;
           stroke-linejoin: round;
         }
@@ -1380,7 +1447,7 @@ class MeaterCompactCard extends MeaterBaseCard {
   }
 
   static getConfigElement() {
-    return document.createElement(MEATER_PROBE_CARD_EDITOR_TAG);
+    return document.createElement(MEATER_APP_CARD_EDITOR_TAG);
   }
 
   getCardSize() {
@@ -1691,6 +1758,55 @@ class MeaterAppCard extends MeaterBaseCard {
     };
   }
 
+  _appArcPoint(angle, radius) {
+    return {
+      x: 180 + Math.cos(angle) * radius,
+      y: 190 - Math.sin(angle) * radius,
+    };
+  }
+
+  _appValueAngle(value, target) {
+    const safeTarget = Number.isFinite(target) && target > 0 ? target : 1;
+    const safeValue = Number.isFinite(value) ? Math.max(0, value) : safeTarget;
+
+    if (safeValue <= safeTarget) {
+      const ratio = Math.max(0, Math.min(1, safeValue / safeTarget));
+      return Math.PI - ratio * (Math.PI / 2);
+    }
+
+    const highRange = Math.max(safeTarget * 2, 100);
+    const ratio = Math.max(0, Math.min(1, (safeValue - safeTarget) / highRange));
+    return Math.PI / 2 - ratio * (Math.PI / 2);
+  }
+
+  _appPointerPolygon(angle) {
+    const tip = this._appArcPoint(angle, 153);
+    const baseCenter = this._appArcPoint(angle, 181);
+    const tangent = {
+      x: -Math.sin(angle),
+      y: -Math.cos(angle),
+    };
+    const halfWidth = 14;
+    const left = {
+      x: baseCenter.x + tangent.x * halfWidth,
+      y: baseCenter.y + tangent.y * halfWidth,
+    };
+    const right = {
+      x: baseCenter.x - tangent.x * halfWidth,
+      y: baseCenter.y - tangent.y * halfWidth,
+    };
+
+    return [tip, left, right]
+      .map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+      .join(" ");
+  }
+
+  _appArcSegmentPath(startAngle, endAngle) {
+    const start = this._appArcPoint(startAngle, 138);
+    const end = this._appArcPoint(endAngle, 138);
+    return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} A 138 138 0 0 1 ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+  }
+
   _render() {
     if (!this.shadowRoot || !this._hass) {
       return;
@@ -1712,9 +1828,12 @@ class MeaterAppCard extends MeaterBaseCard {
     const remainingState = this._state(this._entities.remaining_time);
     const core = numericState(coreState);
     const target = numericState(targetState);
+    const ambient = numericState(ambientState);
     const progress = target ? percent(core, target) : 0;
-    const arcLength = 440;
-    const arcOffset = arcLength - (arcLength * progress) / 100;
+    const targetAngle = Math.PI / 2;
+    const coreAngle = this._appValueAngle(core, target);
+    const ambientAngle = this._appValueAngle(ambient, target);
+    const fillPath = this._appArcSegmentPath(Math.max(coreAngle, targetAngle), Math.min(coreAngle, targetAngle));
     const connected = isAvailable(coreState);
     const status = normalizeLabel(statusState?.state, connected ? "Cooking" : "Probe offline");
     const cookName = normalizeLabel(cookNameState?.state, "Cook");
@@ -1747,21 +1866,17 @@ class MeaterAppCard extends MeaterBaseCard {
             <svg class="app-arc" viewBox="0 0 360 230" role="img" aria-label="Meater cook progress">
               <defs>
                 <linearGradient id="meater-app-arc-gradient" x1="20" y1="190" x2="340" y2="190" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stop-color="#405fb8"></stop>
-                  <stop offset="0.38" stop-color="#b735d6"></stop>
-                  <stop offset="0.68" stop-color="#ff6b2c"></stop>
-                  <stop offset="1" stop-color="#8e2c22"></stop>
+                  <stop offset="0" stop-color="${html(this._configColor("app_target_color", "#39b6ff"))}"></stop>
+                  <stop offset="0.38" stop-color="${html(this._configColor("app_core_color", "#b735d6"))}"></stop>
+                  <stop offset="0.68" stop-color="${html(this._configColor("hot_color", "#ff6b2c"))}"></stop>
+                  <stop offset="1" stop-color="${html(this._configColor("steak_color", "#8e2c22"))}"></stop>
                 </linearGradient>
               </defs>
               <path class="app-arc-track" d="M 42 190 A 138 138 0 0 1 318 190"></path>
-              <path
-                class="app-arc-fill"
-                d="M 42 190 A 138 138 0 0 1 318 190"
-                style="stroke-dasharray: ${arcLength}; stroke-dashoffset: ${arcOffset};"
-              ></path>
-              <polygon class="app-pointer core" points="38,181 66,170 62,199"></polygon>
-              <polygon class="app-pointer target" points="180,38 193,68 167,68"></polygon>
-              <polygon class="app-pointer ambient" points="322,181 294,170 298,199"></polygon>
+              <path class="app-arc-fill" d="${fillPath}"></path>
+              <polygon class="app-pointer core" points="${this._appPointerPolygon(coreAngle)}"></polygon>
+              <polygon class="app-pointer target" points="${this._appPointerPolygon(targetAngle)}"></polygon>
+              <polygon class="app-pointer ambient" points="${this._appPointerPolygon(ambientAngle)}"></polygon>
             </svg>
             <div class="app-center">
               <button class="app-center-button" data-entity="${html(this._entities.remaining_time)}">
@@ -1857,6 +1972,18 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
     return Math.max(60, Number(this._config.refresh_interval) || 300) * 1000;
   }
 
+  _historyLineWidth() {
+    const value = Number(this._config.chart_line_width);
+    if (!Number.isFinite(value)) {
+      return 4;
+    }
+    return Math.max(1, Math.min(12, value));
+  }
+
+  _historyColor(key, fallback) {
+    return cssColor(this._config[key], fallback);
+  }
+
   _maybeLoadHistory() {
     if (!this._hass || this._loading || !this.isConnected) {
       return;
@@ -1883,7 +2010,7 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
         start_time: start.toISOString(),
         end_time: end.toISOString(),
         entity_ids: ids,
-        minimal_response: false,
+        minimal_response: true,
         no_attributes: true,
         significant_changes_only: false,
       });
@@ -1913,6 +2040,9 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
     }
 
     const summary = this._historySummary();
+    const coreLineColor = this._historyColor("core_line_color", this._configColor("hot_color", "#ff6b2c"));
+    const ambientLineColor = this._historyColor("ambient_line_color", this._configColor("ember_color", "#ffb300"));
+    const targetLineColor = this._historyColor("target_line_color", this._configColor("green_color", "#43a047"));
     const title = this._config.name || "Meater temperature history";
     this.shadowRoot.innerHTML = `
       ${this._styles()}
@@ -1942,9 +2072,9 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
           <section class="chart-wrap">
             ${this._chart(summary)}
             <div class="legend">
-              <span><i class="legend-dot" style="background: var(--meater-hot)"></i>Core</span>
-              <span><i class="legend-dot" style="background: var(--meater-ember)"></i>Ambient</span>
-              <span><i class="legend-dot" style="background: var(--meater-green)"></i>Target</span>
+              <span><i class="legend-dot" style="background: ${html(coreLineColor)}"></i>Core</span>
+              <span><i class="legend-dot" style="background: ${html(ambientLineColor)}"></i>Ambient</span>
+              <span><i class="legend-dot" style="background: ${html(targetLineColor)}"></i>Target</span>
             </div>
           </section>
         </div>
@@ -1967,25 +2097,15 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
 
   _historySeries() {
     const result = { core: [], ambient: [], target: [] };
-    if (!Array.isArray(this._history)) {
+    if (!this._history || typeof this._history !== "object") {
       return result;
     }
-    const byEntity = new Map();
-    for (const rows of this._history) {
-      for (const row of rows ?? []) {
-        if (!row?.entity_id) {
-          continue;
-        }
-        if (!byEntity.has(row.entity_id)) {
-          byEntity.set(row.entity_id, []);
-        }
-        byEntity.get(row.entity_id).push(row);
-      }
-    }
+
     const collect = (key, outputKey) => {
-      for (const row of byEntity.get(this._entities[key]) ?? []) {
-        const value = Number(row.state);
-        const time = Date.parse(row.last_changed || row.last_updated);
+      for (const row of this._history[this._entities[key]] ?? []) {
+        const value = Number(row?.s ?? row?.state);
+        const timestamp = row?.lc ?? row?.lu ?? row?.last_changed ?? row?.last_updated;
+        const time = Number.isFinite(timestamp) ? Number(timestamp) * 1000 : Date.parse(timestamp);
         if (Number.isFinite(value) && Number.isFinite(time)) {
           result[outputKey].push({ time, value });
         }
@@ -2000,6 +2120,10 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
   _chart(summary) {
     const width = 560;
     const height = 176;
+    const lineWidth = this._historyLineWidth();
+    const coreColor = this._historyColor("core_line_color", this._configColor("hot_color", "#ff6b2c"));
+    const ambientColor = this._historyColor("ambient_line_color", this._configColor("ember_color", "#ffb300"));
+    const targetColor = this._historyColor("target_line_color", this._configColor("green_color", "#43a047"));
     const allPoints = [
       ...summary.series.core,
       ...summary.series.ambient,
@@ -2026,9 +2150,9 @@ class MeaterProbeHistoryCard extends MeaterBaseCard {
         <line class="grid-line" x1="0" y1="${height * 0.25}" x2="${width}" y2="${height * 0.25}"></line>
         <line class="grid-line" x1="0" y1="${height * 0.5}" x2="${width}" y2="${height * 0.5}"></line>
         <line class="grid-line" x1="0" y1="${height * 0.75}" x2="${width}" y2="${height * 0.75}"></line>
-        ${ambientPath ? `<path class="chart-path chart-ambient" d="${ambientPath}"></path>` : ""}
-        ${targetPath ? `<path class="chart-path chart-target" d="${targetPath}"></path>` : ""}
-        ${corePath ? `<path class="chart-path chart-core" d="${corePath}"></path>` : ""}
+        ${ambientPath ? `<path class="chart-path chart-ambient" d="${ambientPath}" style="stroke: ${html(ambientColor)}; stroke-width: ${lineWidth};"></path>` : ""}
+        ${targetPath ? `<path class="chart-path chart-target" d="${targetPath}" style="stroke: ${html(targetColor)}; stroke-width: ${lineWidth};"></path>` : ""}
+        ${corePath ? `<path class="chart-path chart-core" d="${corePath}" style="stroke: ${html(coreColor)}; stroke-width: ${lineWidth};"></path>` : ""}
       </svg>
     `;
   }
@@ -2068,7 +2192,39 @@ class MeaterCardEditor extends HTMLElement {
     this._render();
   }
 
-  _schema(extra = []) {
+  _styleSchema({ includeAppStyle = false, includeChartStyle = false } = {}) {
+    const schema = [
+      { name: "hot_color", selector: { text: {} } },
+      { name: "ember_color", selector: { text: {} } },
+      { name: "steak_color", selector: { text: {} } },
+      { name: "green_color", selector: { text: {} } },
+      { name: "cool_color", selector: { text: {} } },
+      { name: "progress_bar_height", selector: { number: { min: 2, max: 24, mode: "box" } } },
+      { name: "tile_meter_height", selector: { number: { min: 1, max: 12, mode: "box" } } },
+    ];
+
+    if (includeAppStyle) {
+      schema.push(
+        { name: "app_arc_width", selector: { number: { min: 6, max: 48, mode: "box" } } },
+        { name: "app_core_color", selector: { text: {} } },
+        { name: "app_target_color", selector: { text: {} } },
+        { name: "app_ambient_color", selector: { text: {} } },
+      );
+    }
+
+    if (includeChartStyle) {
+      schema.push(
+        { name: "chart_line_width", selector: { number: { min: 1, max: 12, mode: "box" } } },
+        { name: "core_line_color", selector: { text: {} } },
+        { name: "ambient_line_color", selector: { text: {} } },
+        { name: "target_line_color", selector: { text: {} } },
+      );
+    }
+
+    return schema;
+  }
+
+  _schema(extra = [], options = {}) {
     return [
       { name: "name", selector: { text: {} } },
       { name: "device_id", selector: { device: {} } },
@@ -2078,6 +2234,7 @@ class MeaterCardEditor extends HTMLElement {
         selector: { entity: { domain: "sensor" } },
       })),
       ...extra,
+      ...this._styleSchema(options),
     ];
   }
 
@@ -2114,13 +2271,19 @@ class MeaterProbeCardEditor extends MeaterCardEditor {
   }
 }
 
+class MeaterAppCardEditor extends MeaterCardEditor {
+  _render() {
+    this._renderForm(this._schema([], { includeAppStyle: true }), this._labels());
+  }
+}
+
 class MeaterHistoryCardEditor extends MeaterCardEditor {
   _render() {
     this._renderForm(
       this._schema([
         { name: "hours_to_show", selector: { number: { min: 1, max: 24, mode: "box" } } },
         { name: "refresh_interval", selector: { number: { min: 60, max: 3600, mode: "box" } } },
-      ]),
+      ], { includeChartStyle: true }),
       this._labels(),
     );
   }
@@ -2149,6 +2312,9 @@ if (!customElements.get(MEATER_PROBE_CARD_EDITOR_TAG)) {
 }
 if (!customElements.get(MEATER_HISTORY_CARD_EDITOR_TAG)) {
   customElements.define(MEATER_HISTORY_CARD_EDITOR_TAG, MeaterHistoryCardEditor);
+}
+if (!customElements.get(MEATER_APP_CARD_EDITOR_TAG)) {
+  customElements.define(MEATER_APP_CARD_EDITOR_TAG, MeaterAppCardEditor);
 }
 
 window.customCards = window.customCards || [];
